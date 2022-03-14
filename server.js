@@ -9,7 +9,7 @@ app.get('/', (req, res)=>{
     res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(80 || process.env.PORT, (err)=>{
+app.listen(process.env.PORT || 80, (err)=>{
     if (err)
         throw err;
     
