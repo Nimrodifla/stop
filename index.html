@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Much You Lost</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1 id="lost"></h1>
+    <h2 id="like"></h2>
+    <h3>Wanna lose it?</h3>
+    <input id="amount" type="number" placeholder="How Much You Spending"/>
+    <select id="years">
+        <option value="30">30 years</option>
+        <option value="45">45 years</option>
+        <option value="60">60 years</option>
+    </select>
+</body>
+<script>
+    let costs = [];
+    fetch('./costs').then(res => res.text()).then(data => {
+        costs = JSON.parse(data);
+    });
+    const lostText = document.getElementById('lost');
+    const yearsSelector = document.getElementById('years');
+    const input = document.getElementById('amount');
+    const like = document.getElementById('like');
+    input.addEventListener('change', ()=>{
+        update();
+    });
+
+    function update() {
+        let amount = lost(input.value, 10, yearsSelector.value);
+        lostText.innerHTML = '-' + String(addCommas(amount));
+        // find right cost
+        let text;
+        for (let i = 0; i < costs.length - 1; i++) {
+            if (costs[i].cost <= amount && costs[i+1].cost >= amount) {
+                text = costs[i].text;
+            }
+        }
+        if (text == undefined) {
+            text = costs[costs.length - 1].text;
+        }
+
+        like.innerHTML = "It's like " + text;
+    }
+
+    function lost(amount, change, years) {
+        return Math.floor(Math.pow(((100 + change) / 100), years) * amount);
+    }
+
+    function addCommas(string) {
+        string = string.toString();
+        let res = "";
+        let len = string.length - 1;
+        for (let i = len; i >= 0; i--) {
+            if ((len - i) % 3 == 0 && i != len) {
+                res = ',' + res;
+            }
+            res = string.charAt(i) + res;
+        }
+        return res;
+    }
+
+    setInterval(update, 100);
+</script>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        text-align: center;
+    }
+
+    h1 {
+        color: red;
+        font-size: 20vw;
+        margin: 0;
+    }
+
+    h2 {
+        font-size: 10vw;
+    }
+
+    h3 {
+        margin: 0;
+        font-size: 10vw;
+    }
+
+    input {
+        margin-top: 5vh;
+        font-family: 'Roboto', sans-serif;
+        padding: 2vw;
+        font-size: 5vw;
+        outline: none;
+    }
+</style>
+</html>
