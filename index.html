@@ -35,7 +35,7 @@
 
     function update() {
         let amount = lost(input.value, 10, yearsSelector.value);
-        lostText.innerHTML = '-' + String(addCommas(amount));
+        lostText.innerHTML = '-' + String(addCommas(amount)) + ' ₪';
         // find right cost
         let text;
         for (let i = 0; i < costs.length - 1; i++) {
